@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>작품 갤러리</title>
+    <link rel="stylesheet" href="styles.css"> <!-- 선택 사항: 갤러리 스타일 -->
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .art-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .art-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .art-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .art-info {
+            padding: 15px;
+        }
+
+        .art-info h3 {
+            margin: 0 0 10px;
+            font-size: 1.1rem;
+        }
+
+        .art-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .art-info .meta {
+            font-size: 0.75rem;
+            margin-top: 8px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>작품 갤러리</h1>
+    
+    <div class="gallery-container" id="gallery"></div>
+    <script src="gallery.js"></script>
+    <script>
+        const galleryContainer = document.getElementById('gallery');
+
+        function loadArtworks() {
+            const artworks = JSON.parse(localStorage.getItem('artworks')) || [];
+
+            if (artworks.length === 0) {
+                galleryContainer.innerHTML = '<p style="text-align:center;">등록된 작품이 없습니다.</p>';
+                return;
+            }
+
+            artworks.reverse().forEach(art => {
+                const card = document.createElement('div');
+                card.className = 'art-card';
+
+                card.innerHTML = `
+                    <img src="${art.image}" alt="${art.title}">
+                    <div class="art-info">
+                        <h3>${art.title}</h3>
+                        <p>${art.description}</p>
+                        <div class="meta">
+                            카테고리: ${art.category} <br>
+                            작가: ${art.artist.substring(0, 6)}...${art.artist.slice(-4)} <br>
+                            등록일: ${new Date(art.date).toLocaleDateString()}
+                        </div>
+                    </div>
+                `;
+
+                galleryContainer.appendChild(card);
+            });
+        }
+
+        loadArtworks();
+    
+    </script>
+</body>
+</html>

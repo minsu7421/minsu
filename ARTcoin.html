@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART Coin 플랫폼 | 작품 등록</title>
+    <style>
+        /* 전체 스타일 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .wallet-connect {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .wallet-connect:hover {
+            background-color: #2563eb;
+        }
+
+        .wallet-status {
+            display: none;
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #0369a1;
+        }
+
+        /* 메인 컨텐츠 스타일 */
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        @media (min-width: 992px) {
+            main {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* 플랫폼 소개 섹션 */
+        .intro-section {
+            margin-bottom: 20px;
+        }
+
+        .intro-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        .intro-section p {
+            margin-bottom: 16px;
+        }
+
+        .intro-section h3 {
+            font-size: 18px;
+            margin: 24px 0 12px;
+            color: #1e40af;
+        }
+
+        .intro-section ul {
+            padding-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .intro-section li {
+            margin-bottom: 8px;
+        }
+
+        /* 폼 섹션 */
+        .form-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        .upload-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .hint-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .wallet-warning {
+            font-size: 14px;
+            color: #ef4444;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* 미리보기 섹션 */
+        .preview-container {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background-color: #f3f4f6;
+        }
+
+        /* 알림 메시지 */
+        .alert {
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            border-left: 4px solid #10b981;
+            color: #047857;
+        }
+
+        .alert-icon {
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            background-color: #fff;
+            border-top: 1px solid #e5e7eb;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div>
+                <h1 class="logo">ART Coin 플랫폼</h1>
+                <p class="subtitle">작품을 등록하고 ART Coin을 받으세요</p>
+            </div>
+            <div>
+                <button id="wallet-connect" class="wallet-connect">지갑 연결</button>
+                <div id="wallet-status" class="wallet-status">
+                    연결됨: 0x7...a4f
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 왼쪽: 플랫폼 소개 및 혜택 설명 -->
+        <section class="intro-section">
+            <h2>ART Coin 플랫폼에 오신 것을 환영합니다</h2>
+            
+            <p>
+                ART Coin 플랫폼은 디자이너, 일러스트레이터, 3D 아티스트들을 위한 
+                창작 플랫폼입니다. 여러분의 작품을 등록하면 ART Coin을 보상으로 
+                받을 수 있습니다.
+            </p>
+            
+            <h3>플랫폼 혜택</h3>
+            <ul>
+                <li>작품당 50 ART Coin 즉시 지급</li>
+                <li>커뮤니티 내 작품 노출 및 홍보 기회</li>
+                <li>1 조회수당 1 ART Coin, 1 좋아요당 3 ART Coin 지급</li>
+                <li>작품에 대한 피드백과 의견 교환</li>
+                <li>마켓플레이스를 통한 추가 수익 창출 가능</li>
+            </ul>
+            
+            <h3>작품 등록 가이드라인</h3>
+            <ul>
+                <li>고해상도 이미지 파일 권장 (최소 1200x900px)</li>
+                <li>저작권에 문제가 없는 본인 창작물만 등록 가능</li>
+                <li>작품 설명은 상세히 작성해주세요</li>
+                <li>적절한 카테고리를 선택하여 작품 노출도를 높이세요</li>
+            </ul>
+            
+            <p id="wallet-message" style="margin-top: 32px; font-weight: 600;">
+                오른쪽 폼을 작성하여 지금 바로 작품을 등록해보세요!
+            </p>
+        </section>
+        
+        <!-- 오른쪽: 작품 등록 폼 -->
+        <section class="form-section">
+            <h2>작품 등록</h2>
+            
+            <div id="success-alert" class="alert alert-success hidden">
+                <svg class="alert-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <div>작품이 성공적으로 등록되었습니다! 50 ART Coin이 지급되었습니다.</div>
+            </div>
+            
+            <form id="upload-form" class="upload-form">
+                <div class="form-group">
+                    <label for="title">작품 제목 *</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">작품 설명 *</label>
+                    <textarea id="description" name="description" class="form-control" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">카테고리 *</label>
+                    <select id="category" name="category" class="form-control">
+                        <option value="illustration">일러스트레이션</option>
+                        <option value="design">디자인</option>
+                        <option value="3d">3D 아트</option>
+                        <option value="photography">사진</option>
+                        <option value="animation">애니메이션</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="artwork">작품 파일 *</label>
+                    <input type="file" id="artwork" name="artwork" class="form-control" accept="image/*" required>
+                    <p class="hint-text">JPG, PNG, GIF 파일 (최대 10MB)</p>
+                </div>
+                
+                <div id="preview-section" class="form-group hidden">
+                    <label>미리보기</label>
+                    <div class="preview-container">
+                        <img id="preview-image" class="preview-image" src="" alt="작품 미리보기">
+                    </div>
+                </div>
+                
+                <button id="submit-btn" type="submit" class="submit-btn">작품 등록하기</button>
+                <p id="wallet-warning" class="wallet-warning hidden">
+                    작품을 등록하려면 먼저 지갑을 연결해주세요.
+                </p>
+            </form>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-container">
+            &copy; 2025 ART Coin 플랫폼. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+      // 작품 업로드 페이지(upload.html)의 스크립트 부분에 추가할 코드
+
+// DOM 요소
+const walletConnectBtn = document.getElementById('wallet-connect');
+const walletStatus = document.getElementById('wallet-status');
+const walletMessage = document.getElementById('wallet-message');
+const walletWarning = document.getElementById('wallet-warning');
+const submitBtn = document.getElementById('submit-btn');
+const uploadForm = document.getElementById('upload-form');
+const artworkInput = document.getElementById('artwork');
+const previewSection = document.getElementById('preview-section');
+const previewImage = document.getElementById('preview-image');
+const successAlert = document.getElementById('success-alert');
+
+// 지갑 연결 상태
+let walletConnected = false;
+let walletAddress = '';
+
+// 지갑 상태 업데이트 함수
+function updateWalletUI() {
+    if (walletConnected) {
+        walletConnectBtn.style.display = 'none';
+        walletStatus.style.display = 'block';
+        walletStatus.textContent = `연결됨: ${walletAddress}`;
+        walletWarning.classList.add('hidden');
+        walletMessage.textContent = '오른쪽 폼을 작성하여 지금 바로 작품을 등록해보세요!';
+    } else {
+        walletConnectBtn.style.display = 'block';
+        walletStatus.style.display = 'none';
+        walletWarning.classList.remove('hidden');
+        walletMessage.textContent = '작품을 등록하려면 먼저 지갑을 연결해주세요.';
+    }
+}
+
+// MetaMask 연결 함수
+async function connectWallet() {
+    // MetaMask가 설치되어 있는지 확인
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            // MetaMask 지갑 연결 요청
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            
+            // 연결된 계정 주소 저장
+            walletAddress = accounts[0];
+            
+            // 주소 포맷팅 (앞 6자리 + ... + 뒤 4자리)
+            const formattedAddress = `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
+            
+            // 지갑 연결 상태 업데이트
+            walletConnected = true;
+            walletStatus.textContent = `연결됨: ${formattedAddress}`;
+            
+            // UI 업데이트
+            updateWalletUI();
+            
+            // 계정 변경 이벤트 리스너 등록
+            window.ethereum.on('accountsChanged', handleAccountChange);
+            
+            console.log('MetaMask 연결됨:', walletAddress);
+            
+            // 선택적: 네트워크가 올바른지 확인
+            checkNetwork();
+            
+        } catch (error) {
+            console.error('MetaMask 연결 오류:', error);
+            alert('MetaMask 연결에 실패했습니다. 다시 시도해주세요.');
+        }
+    } else {
+        // MetaMask가 설치되어 있지 않은 경우
+        alert('MetaMask가 설치되어 있지 않습니다. MetaMask를 설치한 후 다시 시도해주세요.');
+        // MetaMask 설치 페이지로 리디렉션 (선택적)
+        window.open('https://metamask.io/download.html', '_blank');
+    }
+}
+
+// 계정 변경 핸들러
+function handleAccountChange(accounts) {
+    if (accounts.length === 0) {
+        // 계정 연결 해제됨
+        walletConnected = false;
+        walletAddress = '';
+        console.log('MetaMask 연결 해제됨');
+    } else {
+        // 새 계정으로 변경됨
+        walletAddress = accounts[0];
+        const formattedAddress = `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
+        walletStatus.textContent = `연결됨: ${formattedAddress}`;
+        console.log('MetaMask 계정 변경됨:', walletAddress);
+    }
+    
+    // UI 업데이트
+    updateWalletUI();
+}
+
+// 네트워크 확인 함수
+async function checkNetwork() {
+    try {
+        // 현재 네트워크 ID 가져오기
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        
+        // 예: Ethereum Mainnet = 0x1, Polygon = 0x89, BSC = 0x38
+        const requiredChainId = '0x1'; // 이더리움 메인넷
+        
+        if (chainId !== requiredChainId) {
+            alert('이 플랫폼은 이더리움 메인넷에서 작동합니다. 네트워크를 변경해주세요.');
+            
+            // 선택적: 네트워크 변경 요청
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: requiredChainId }],
+                });
+            } catch (switchError) {
+                // 네트워크 변경 실패
+                console.error('네트워크 변경 실패:', switchError);
+            }
+        }
+    } catch (error) {
+        console.error('네트워크 확인 오류:', error);
+    }
+}
+
+// 작품 데이터를 로컬 스토리지에 저장하는 함수
+function saveArtwork(artworkData) {
+    // 기존 작품 데이터 가져오기
+    let artworks = JSON.parse(localStorage.getItem('artworks')) || [];
+    
+    // 새 작품 데이터 추가
+    artworks.push(artworkData);
+    
+    // 로컬 스토리지에 저장
+    localStorage.setItem('artworks', JSON.stringify(artworks));
+    
+    console.log('작품이 저장되었습니다:', artworkData);
+}
+
+// 파일을 Base64로 인코딩하는 함수
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+// 지갑 연결 버튼 클릭 이벤트
+walletConnectBtn.addEventListener('click', connectWallet);
+
+// 파일 선택 시 미리보기 표시
+artworkInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            previewImage.src = event.target.result;
+            previewSection.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// 폼 제출 처리
+uploadForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!walletConnected) {
+        alert('작품을 등록하려면 먼저 지갑을 연결해주세요.');
+        return;
+    }
+    
+    // 폼 데이터 가져오기
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const category = document.getElementById('category').value;
+    const file = document.getElementById('artwork').files[0];
+    
+    if (!title || !description || !file) {
+        alert('모든 필수 항목을 입력해주세요.');
+        return;
+    }
+    
+    // 버튼 비활성화 및 텍스트 변경 (로딩 상태)
+    submitBtn.disabled = true;
+    submitBtn.textContent = '등록 중...';
+    
+    try {
+        // 파일을 Base64로 인코딩
+        const imageBase64 = await getBase64(file);
+        
+        // 현재 날짜 생성
+        const uploadDate = new Date().toISOString();
+        
+        // 작품 데이터 생성
+        const artworkData = {
+            id: Date.now().toString(), // 고유 ID
+            title: title,
+            description: description,
+            category: category,
+            image: imageBase64,
+            artist: walletAddress,
+            date: uploadDate,
+            views: 0,
+            likes: 0,
+            likedBy: []
+        };
+        
+        // 로컬 스토리지에 작품 저장
+        saveArtwork(artworkData);
+        
+        // 폼 초기화
+        uploadForm.reset();
+        previewSection.classList.add('hidden');
+        
+        // 성공 메시지 표시
+        successAlert.classList.remove('hidden');
+        
+        // 버튼 상태 복원
+        submitBtn.disabled = false;
+        submitBtn.textContent = '작품 등록하기';
+        
+        // 3초 후 성공 메시지 숨기기
+        setTimeout(function() {
+            successAlert.classList.add('hidden');
+            
+            // 갤러리 페이지로 이동 옵션 제공
+            if (confirm('작품이 성공적으로 등록되었습니다! 갤러리로 이동하시겠습니까?')) {
+                window.location.href = 'gallery.html';
+            }
+        }, 2000);
+        
+    } catch (error) {
+        console.error('작품 등록 오류:', error);
+        alert('작품 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
+        
+        // 버튼 상태 복원
+        submitBtn.disabled = false;
+        submitBtn.textContent = '작품 등록하기';
+    }
+});
+
+// MetaMask 이벤트 리스너 등록
+if (window.ethereum) {
+    // 연결 해제 이벤트
+    window.ethereum.on('disconnect', () => {
+        walletConnected = false;
+        walletAddress = '';
+        updateWalletUI();
+        console.log('MetaMask 연결 해제됨');
+    });
+    
+    // 네트워크 변경 이벤트
+    window.ethereum.on('chainChanged', () => {
+        // 페이지 새로고침 (권장)
+        window.location.reload();
+    });
+}
+
+// 초기 UI 상태 설정
+updateWalletUI();
+
+// 페이지 로드 시 이미 연결되어 있는지 확인
+async function checkExistingConnection() {
+    if (window.ethereum) {
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+            if (accounts.length > 0) {
+                walletAddress = accounts[0];
+                const formattedAddress = `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
+                walletConnected = true;
+                walletStatus.textContent = `연결됨: ${formattedAddress}`;
+                updateWalletUI();
+                console.log('이미 연결된 MetaMask 계정:', walletAddress);
+            }
+        } catch (error) {
+            console.error('기존 연결 확인 오류:', error);
+        }
+    }
+}
+
+// 페이지 로드 시 기존 연결 확인
+checkExistingConnection();
+
+// 네비게이션 바에 갤러리 링크 추가
+document.addEventListener('DOMContentLoaded', function() {
+    // 네비게이션 바 요소가 존재하는지 확인
+    const headerContainer = document.querySelector('.header-container');
+    
+    if (headerContainer) {
+        // 네비게이션 메뉴 생성
+        const navMenu = document.createElement('div');
+        navMenu.className = 'nav-menu';
+        navMenu.style.marginLeft = '20px';
+        
+        // 갤러리 링크 생성
+        const galleryLink = document.createElement('a');
+        galleryLink.href = 'gallery.html';
+        galleryLink.textContent = '작품 갤러리';
+        galleryLink.style.marginRight = '15px';
+        galleryLink.style.color = '#3b82f6';
+        galleryLink.style.textDecoration = 'none';
+        galleryLink.style.fontWeight = '500';
+        
+        // 업로드 링크 생성
+        const uploadLink = document.createElement('a');
+        uploadLink.href = 'upload.html'; // 현재 페이지
+        uploadLink.textContent = '작품 등록';
+        uploadLink.style.color = '#3b82f6';
+        uploadLink.style.textDecoration = 'none';
+        uploadLink.style.fontWeight = '500';
+        
+        // 메뉴에 링크 추가
+        navMenu.appendChild(galleryLink);
+        navMenu.appendChild(uploadLink);
+        
+        // 로고 요소 찾기
+        const logoElement = headerContainer.querySelector('div:first-child');
+        
+        // 로고 다음에 네비게이션 메뉴 추가
+        if (logoElement && logoElement.nextSibling) {
+            headerContainer.insertBefore(navMenu, logoElement.nextSibling);
+        }
+    }
+});
+    </script>
+</body>
+</html>

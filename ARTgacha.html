@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART 코인 가챠 챌린지</title>
+    <!-- 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-connect {
+            background-color: #ff9f43;
+        }
+        
+        .btn-gacha {
+            background-color: var(--secondary);
+            font-size: 1.5rem;
+            padding: 1.5rem 3rem;
+        }
+        
+        .btn-gacha:disabled {
+            background-color: #b2bec3;
+            cursor: not-allowed;
+        }
+        
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .examples {
+            margin-bottom: 4rem;
+        }
+        
+        .examples h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .example-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .example-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .example-img {
+            width: 100%;
+            height: 200px;
+            background-color: #dfe6e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-weight: bold;
+        }
+        
+        .example-content {
+            padding: 1.5rem;
+        }
+        
+        .wallet-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #dfe6e9;
+        }
+        
+        .status-dot.connected {
+            background-color: var(--success);
+        }
+        
+        .status-dot.wrong-network {
+            background-color: var(--warning);
+        }
+
+        .network-badge {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            background-color: var(--dark);
+            color: white;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .challenge-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .challenge-desc {
+            margin-bottom: 2rem;
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .upload-area {
+            border: 2px dashed #dfe6e9;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            color: white;
+            background-color: var(--danger);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn-gacha {
+                font-size: 1.2rem;
+                padding: 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wallet-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="wallet-address">지갑 연결 필요</span>
+        <span id="network-badge" class="network-badge hidden"></span>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1>ART 코인 가챠 챌린지</h1>
+            <p>당신의 창의력을 시험하고 ART 코인을 획득하세요!</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="wallet-alert" class="alert hidden"></div>
+        
+        <section class="hero">
+            <p>ART 코인으로 랜덤 챌린지를 뽑고, 창작 미션을 완료하면 더 많은 코인을 보상받을 수 있습니다. 이 플랫폼은 예술가들이 새로운 영감과 도전을 통해 성장할 수 있는 기회를 제공합니다.</p>
+            <div>
+                <button class="btn btn-connect" id="connect-wallet">MetaMask 지갑 연결</button>
+                <button class="btn btn-gacha" id="gacha-button" disabled>가챠 뽑기 (10 ART)</button>
+            </div>
+            <div id="art-balance" class="hidden">
+                <h3>보유 ART 코인: <span id="balance-amount">0</span></h3>
+            </div>
+        </section>
+
+        <section class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>지갑 연결</h3>
+                <p>MetaMask 지갑을 연결하여 ART 코인을 사용할 준비를 하세요.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>가챠 뽑기</h3>
+                <p>10 ART 코인으로 랜덤 챌린지를 뽑고 제한 시간과 미션을 확인하세요.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>작품 제작</h3>
+                <p>주어진 기한 내에 미션에 맞는 창작물을 만들고 업로드하세요.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>보상 획득</h3>
+                <p>커뮤니티와 AI의 심사를 통해 성공 판정을 받으면 ART 코인을 보상받습니다.</p>
+            </div>
+        </section>
+
+        <section class="examples">
+            <h2>챌린지 예시</h2>
+            <div class="example-cards">
+                <div class="example-card">
+                    <div class="example-img">
+                        <img src="/api/placeholder/400/320" alt="한글/영문 글자 디자인" />
+                    </div>
+                    <div class="example-content">
+                        <h3>글자 디자인 챌린지</h3>
+                        <p>하나의 한글 또는 영문 글자를 선택하여 독창적인 디자인을 만들어보세요.</p>
+                    </div>
+                </div>
+                <div class="example-card">
+                    <div class="example-img">
+                        <img src="/api/placeholder/400/320" alt="제한 색상 작품" />
+                    </div>
+                    <div class="example-content">
+                        <h3>색상 제한 챌린지</h3>
+                        <p>노란색과 검정색 등 제한된 색상만을 사용하여 작품을 만들어보세요.</p>
+                    </div>
+                </div>
+                <div class="example-card">
+                    <div class="example-img">
+                        <img src="/api/placeholder/400/320" alt="60초 손그림" />
+                    </div>
+                    <div class="example-content">
+                        <h3>60초 스피드 드로잉</h3>
+                        <p>60초 내에 주제에 맞는 손그림을 완성하고 업로드하세요. 타이머가 제공됩니다.</p>
+                    </div>
+                </div>
+                <div class="example-card">
+                    <div class="example-img">
+                        <img src="/api/placeholder/400/320" alt="명화 재해석" />
+                    </div>
+                    <div class="example-content">
+                        <h3>명화 재해석</h3>
+                        <p>유명 작품을 자신만의 스타일로 재해석하여 창작적인 작품을 만들어보세요.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal" id="challenge-modal">
+        <div class="modal-content">
+            <h2 class="challenge-title" id="challenge-title">챌린지 제목</h2>
+            <p class="challenge-desc" id="challenge-desc">챌린지 설명이 여기에 표시됩니다.</p>
+            <div id="timer-section" class="hidden">
+                <h3>남은 시간:</h3>
+                <div class="countdown" id="countdown">00:00</div>
+            </div>
+            <div class="upload-area" id="upload-area">
+                <p>작품을 업로드하려면 클릭하세요</p>
+                <input type="file" id="artwork-upload" class="hidden" accept="image/*">
+            </div>
+            <div id="preview-container" class="hidden">
+                <img id="artwork-preview" src="" alt="업로드된 작품 미리보기" style="max-width: 100%; max-height: 300px;">
+            </div>
+            <button class="btn" id="submit-artwork" disabled>작품 제출하기</button>
+        </div>
+    </div>
+
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <h2>심사 결과</h2>
+            <p id="result-message"></p>
+            <div id="reward-info" class="hidden">
+                <h3>획득한 보상:</h3>
+                <p><span id="reward-amount">0</span> ART 코인</p>
+            </div>
+            <button class="btn" id="close-result">확인</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ART 코인 가챠 챌린지. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- ethers.js 라이브러리 - CDN 링크 변경 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
+    <script>
+    // ethers 객체 상태 확인
+    console.log("ethers 객체 상태:", typeof ethers);
+    
+    // 상수 및 설정
+    const ART_TOKEN_ADDRESS = "0xeE964E3E5BB77f7949634cea0312EA907191188b";
+    const ART_TOKEN_ABI = [
+        "function balanceOf(address owner) view returns (uint256)",
+        "function decimals() view returns (uint8)"
+    ];
+    const REQUIRED_NETWORK_ID = "0x13882"; // Amoy 테스트넷
+
+    const NETWORK_NAMES = {
+    "0x1": "Ethereum Mainnet",
+    "0x5": "Goerli Testnet",
+    "0xaa36a7": "Sepolia Testnet",
+    "0x89": "Polygon Mainnet",
+    "0x13881": "Mumbai Testnet",
+    "0x13882": "Amoy Testnet"
+    };
+
+    // 상태 변수
+    let currentAccount = null;
+    let provider = null;
+    let tokenContract = null;
+    let isConnected = false;
+    let currentChainId = null;
+
+    // ethers.js 로드 확인 및 초기화 함수
+    function checkEthersLoaded() {
+        if (typeof ethers === 'undefined') {
+            console.log('ethers.js 로딩 중...');
+            setTimeout(checkEthersLoaded, 100); // 100ms 후 다시 확인
+            return;
+        }
+        console.log('ethers.js 로드 완료');
+        init(); // ethers가 로드된 후 초기화 함수 실행
+    }
+
+    // 초기화 함수
+    async function init() {
+        // DOM 요소
+        const connectWalletBtn = document.getElementById("connect-wallet");
+        const gachaButton = document.getElementById("gacha-button");
+        const statusDot = document.getElementById("status-dot");
+        const walletAddress = document.getElementById("wallet-address");
+        const artBalance = document.getElementById("art-balance");
+        const balanceAmount = document.getElementById("balance-amount");
+        const networkBadge = document.getElementById("network-badge") || document.createElement("span");
+
+        // 로컬 스토리지에서 연결 상태 확인
+        const savedAccount = localStorage.getItem("connectedAccount");
+        if (savedAccount && window.ethereum) {
+            try {
+                await connectWallet(true);
+            } catch (err) {
+                console.error("자동 연결 실패:", err);
+                // 로컬 스토리지 초기화
+                localStorage.removeItem("connectedAccount");
+            }
+        }
+
+        // 메타마스크 이벤트 리스너 설정
+        if (window.ethereum) {
+            // 계정 변경 감지
+            window.ethereum.on("accountsChanged", handleAccountsChanged);
+            
+            // 네트워크 변경 감지
+            window.ethereum.on("chainChanged", handleChainChanged);
+            
+            // 연결 해제 감지
+            window.ethereum.on("disconnect", handleDisconnect);
+            
+            // 연결 버튼 이벤트
+            connectWalletBtn.addEventListener("click", () => connectWallet(false));
+            
+            // 가챠 버튼 이벤트 (예시)
+            gachaButton.addEventListener("click", () => {
+                alert("가챠 기능이 곧 구현될 예정입니다!");
+            });
+        } else {
+            // MetaMask가 설치되어 있지 않은 경우
+            const walletAlert = document.getElementById("wallet-alert");
+            walletAlert.textContent = "MetaMask가 설치되어 있지 않습니다. MetaMask를 설치하고 다시 시도해주세요.";
+            walletAlert.classList.remove("hidden");
+            connectWalletBtn.disabled = true;
+        }
+    }
+
+    // 지갑 연결 함수
+    async function connectWallet(isAutoConnect = false) {
+        const connectWalletBtn = document.getElementById("connect-wallet");
+        const gachaButton = document.getElementById("gacha-button");
+        const statusDot = document.getElementById("status-dot");
+        const walletAddress = document.getElementById("wallet-address");
+        const artBalance = document.getElementById("art-balance");
+        const balanceAmount = document.getElementById("balance-amount");
+        const networkBadge = document.getElementById("network-badge") || document.createElement("span");
+
+        if (typeof window.ethereum === "undefined") {
+            alert("MetaMask가 설치되어 있지 않습니다. MetaMask를 설치하고 다시 시도해주세요.");
+            return;
+        }
+
+        try {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            
+            // 계정 요청 (자동 연결이 아닌 경우에만)
+            let accounts;
+            if (!isAutoConnect) {
+                accounts = await provider.send("eth_requestAccounts", []);
+            } else {
+                accounts = await provider.listAccounts();
+                if (accounts.length === 0) return; // 연결된 계정이 없으면 중단
+            }
+            
+            const signer = provider.getSigner();
+            currentAccount = await signer.getAddress();
+            
+            // 네트워크 확인
+            const network = await provider.getNetwork();
+            currentChainId = "0x" + network.chainId.toString(16);
+            
+            // UI 업데이트
+            statusDot.classList.add("connected");
+            walletAddress.textContent = `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}`;
+            connectWalletBtn.textContent = "지갑 연결됨";
+            
+            // 네트워크 배지 업데이트
+            const networkName = NETWORK_NAMES[currentChainId] || `Chain ID: ${currentChainId}`;
+            if (networkBadge.classList) {
+                networkBadge.textContent = networkName;
+                networkBadge.classList.remove("hidden");
+            }
+            
+            // 토큰 계약 초기화 및 잔액 조회
+            tokenContract = new ethers.Contract(ART_TOKEN_ADDRESS, ART_TOKEN_ABI, provider);
+            const rawBalance = await tokenContract.balanceOf(currentAccount);
+            const decimals = await tokenContract.decimals();
+            const formatted = ethers.utils.formatUnits(rawBalance, decimals);
+            
+            artBalance.classList.remove("hidden");
+            balanceAmount.textContent = parseFloat(formatted).toFixed(2);
+            
+            // 네트워크 확인
+            if (currentChainId !== REQUIRED_NETWORK_ID) {
+                statusDot.classList.remove("connected");
+                statusDot.classList.add("wrong-network");
+                alert(`이 애플리케이션은 ${NETWORK_NAMES[REQUIRED_NETWORK_ID]}에서만 사용할 수 있습니다. 현재 네트워크: ${networkName}`);
+                gachaButton.disabled = true;
+            } else {
+                // 잔액이 10 이상인 경우에만 가챠 버튼 활성화
+                gachaButton.disabled = parseFloat(formatted) < 10;
+            }
+            
+            // 연결 정보 저장
+            localStorage.setItem("connectedAccount", currentAccount);
+            
+            isConnected = true;
+            console.log("지갑 연결 성공:", currentAccount);
+            console.log("ART 잔액:", formatted);
+            
+        } catch (err) {
+            console.error("연결 오류:", err);
+            if (err.code === 4001) {
+                // 사용자가 요청을 거부한 경우
+                alert("지갑 연결이 거부되었습니다.");
+            } else {
+                alert("지갑 연결 중 오류가 발생했습니다: " + err.message);
+            }
+        }
+    }
+
+    // 계정 변경 처리
+    function handleAccountsChanged(accounts) {
+        const statusDot = document.getElementById("status-dot");
+        const walletAddress = document.getElementById("wallet-address");
+        const artBalance = document.getElementById("art-balance");
+        const balanceAmount = document.getElementById("balance-amount");
+        const gachaButton = document.getElementById("gacha-button");
+        const networkBadge = document.getElementById("network-badge") || document.createElement("span");
+
+        if (accounts.length === 0) {
+            // 계정 연결 해제
+            handleDisconnect();
+        } else if (accounts[0] !== currentAccount) {
+            currentAccount = accounts[0];
+            walletAddress.textContent = `${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}`;
+            
+            if (tokenContract) {
+                // 토큰 잔액 업데이트
+                tokenContract.balanceOf(currentAccount).then(async (rawBalance) => {
+                    const decimals = await tokenContract.decimals();
+                    const formatted = ethers.utils.formatUnits(rawBalance, decimals);
+                    
+                    balanceAmount.textContent = parseFloat(formatted).toFixed(2);
+                    
+                    // 잔액에 따라 가챠 버튼 상태 업데이트
+                    if (currentChainId === REQUIRED_NETWORK_ID) {
+                        gachaButton.disabled = parseFloat(formatted) < 10;
+                    }
+                    
+                    console.log("ART 잔액:", formatted);
+                }).catch(err => {
+                    console.error("잔액 조회 오류:", err);
+                });
+            }
+            
+            // 연결 정보 저장
+            localStorage.setItem("connectedAccount", currentAccount);
+            console.log("계정 변경:", currentAccount);
+        }
+    }
+
+    // 네트워크 변경 처리
+    function handleChainChanged(chainId) {
+        const statusDot = document.getElementById("status-dot");
+        const networkBadge = document.getElementById("network-badge") || document.createElement("span");
+        const gachaButton = document.getElementById("gacha-button");
+        const balanceAmount = document.getElementById("balance-amount");
+
+        // 페이지 새로고침 대신 네트워크 정보만 업데이트
+        currentChainId = chainId;
+        
+        // 네트워크 배지 업데이트
+        const networkName = NETWORK_NAMES[currentChainId] || `Chain ID: ${currentChainId}`;
+        if (networkBadge.classList) {
+            networkBadge.textContent = networkName;
+        }
+        
+        // 필요한 네트워크인지 확인
+        if (currentChainId !== REQUIRED_NETWORK_ID) {
+            statusDot.classList.remove("connected");
+            statusDot.classList.add("wrong-network");
+            alert(`이 애플리케이션은 ${NETWORK_NAMES[REQUIRED_NETWORK_ID]}에서만 사용할 수 있습니다. 현재 네트워크: ${networkName}`);
+            gachaButton.disabled = true;
+        } else {
+            statusDot.classList.remove("wrong-network");
+            statusDot.classList.add("connected");
+            
+            // 토큰 잔액 재확인
+            if (tokenContract && currentAccount) {
+                tokenContract.balanceOf(currentAccount).then(async (rawBalance) => {
+                    const decimals = await tokenContract.decimals();
+                    const formatted = ethers.utils.formatUnits(rawBalance, decimals);
+                    balanceAmount.textContent = parseFloat(formatted).toFixed(2);
+                    
+                    // 잔액에 따라 가챠 버튼 상태 업데이트
+                    gachaButton.disabled = parseFloat(formatted) < 10;
+                }).catch(console.error);
+            }
+        }
+        
+        console.log("네트워크 변경:", chainId);
+    }
+
+    // 연결 해제 처리
+    function handleDisconnect() {
+        const statusDot = document.getElementById("status-dot");
+        const walletAddress = document.getElementById("wallet-address");
+        const networkBadge = document.getElementById("network-badge") || document.createElement("span");
+        const artBalance = document.getElementById("art-balance");
+        const gachaButton = document.getElementById("gacha-button");
+        const connectWalletBtn = document.getElementById("connect-wallet");
+
+        currentAccount = null;
+        isConnected = false;
+        localStorage.removeItem("connectedAccount");
+        
+        // UI 업데이트
+        statusDot.classList.remove("connected", "wrong-network");
+        walletAddress.textContent = "지갑 연결 필요";
+        if (networkBadge.classList) {
+            networkBadge.classList.add("hidden");
+        }
+        artBalance.classList.add("hidden");
+        gachaButton.disabled = true;
+        
+        connectWalletBtn.textContent = "MetaMask 지갑 연결";
+        console.log("지갑 연결 해제");
+    }
+
+    // 페이지 로드 시 ethers 로딩 확인
+    window.addEventListener("DOMContentLoaded", checkEthersLoaded);
+    </script>
+</body>
+</html>
